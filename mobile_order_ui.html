@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk UI with Options</title>
+    <style>
+        .kiosk {
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .kiosk_background {
+            width: 450px;
+            height: 95vh;
+            background-color: black;
+            border-radius: 15px;
+            margin-top: 1vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .kiosck_screen {
+            width: 428px;
+            height: 76vh;
+            background-color: white;
+            border-radius: 15px;
+            margin: 11px;
+            position: relative;
+        }
+
+        .menu_bar {
+            width: 100%;
+            height: 10%;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .content_area {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .product_item, .cart_item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        #window_detail1 {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="kiosk">
+        <div class="kiosk_background">
+            <div class="kiosck_screen">
+                <div class="menu_bar">
+                    <button onclick="showProducts()">Menu</button>
+                    <button onclick="showCart()">Cart</button>
+                </div>
+                <div class="content_area">
+                    <div id="product_list">
+                        <h3>Products</h3>
+                        <div class="product_item">
+                            <span>Americano - 3</span>
+                            <button onclick="openOption('Americano', 3)">Add</button>
+                        </div>
+                        <div class="product_item">
+                            <span>Latte - 4</span>
+                            <button onclick="openOption('Latte', 4)">Add</button>
+                        </div>
+                        <div class="product_item">
+                            <span>Espresso - 3</span>
+                            <button onclick="openOption('Espresso', 3)">Add</button>
+                        </div>
+                        <div class="product_item">
+                            <span>Green Tea - 5</span>
+                            <button onclick="openOption('Green Tea', 5)">Add</button>
+                        </div>
+                    </div>
+
+                    <div id="cart_list" style="display: none;">
+                        <h3>Shopping Cart</h3>
+                        <div id="cart_items"></div>
+                        <strong>Total: $<span id="total_price">0</span></strong>
+                        <button onclick="checkout()">Checkout</button>
+                    </div>
+
+                    <div id="window_detail1">
+                        <h3>Options</h3>
+                        <p>Choose Temperature:</p>
+                        <label><input type="radio" name="temp" value="Hot"> Hot</label>
+                        <label><input type="radio" name="temp" value="Ice"> Ice</label>
+                        <p>Choose Size:</p>
+                        <label><input type="radio" name="size" value="Medium"> Medium</label>
+                        <label><input type="radio" name="size" value="Large"> Large</label>
+                        <button onclick="addToCartWithOption()" style="display: block; margin-top: 10px;">Add</button>
+                        <button onclick="closeOption()" style="display: block; margin-top: 10px;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cart = []; // 장바구니 배열
+        let selectedProduct = null;
+        let selectedPrice = 0;
+
+        // 메뉴 화면 표시
+        function showProducts() {
+            document.getElementById("product_list").style.display = 'block';
+            document.getElementById("cart_list").style.display = 'none';
+            document.getElementById("window_detail1").style.display = 'none';
+        }
+
+        // 장바구니 화면 표시
+        function showCart() {
+            document.getElementById("product_list").style.display = 'none';
+            document.getElementById("cart_list").style.display = 'block';
+            updateCart();
+        }
+
+        // 옵션창 열기
+        function openOption(product, price) {
+            selectedProduct = product;
+            selectedPrice = price;
+            document.getElementById("window_detail1").style.display = 'block';
+            document.getElementById("product_list").style.display = 'none';
+        }
+
+        // 옵션창 닫기
+        function closeOption() {
+            document.getElementById("window_detail1").style.display = 'none';
+            document.getElementById("product_list").style.display = 'block';
+        }
+
+        // 옵션 선택 후 장바구니에 추가
+        function addToCartWithOption() {
+            const temp = document.querySelector('input[name="temp"]:checked');
+            const size = document.querySelector('input[name="size"]:checked');
+
+            if (!temp || !size) {
+                alert("Please select options before adding to cart!");
+                return;
+            }
+
+            cart.push({
+                product: selectedProduct,
+                price: selectedPrice,
+                options: `(${temp.value}, ${size.value})`
+            });
+
+            alert(`${selectedProduct} added to cart with options: ${temp.value}, ${size.value}`);
+            document.getElementById("window_detail1").style.display = 'none';
+            showCart(); // 장바구니 화면으로 이동
+        }
+
+        // 장바구니 업데이트
+        function updateCart() {
+            const cartItems = document.getElementById("cart_items");
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const div = document.createElement("div");
+                div.className = "cart_item";
+                div.innerHTML = `
+                    <span>${item.product} ${item.options} - $${item.price}</span>
+                    <button onclick="removeFromCart(${index})">Remove</button>
+                `;
+                cartItems.appendChild(div);
+                total += item.price;
+            });
+
+            document.getElementById("total_price").innerText = total;
+        }
+
+        // 장바구니에서 항목 제거
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // 결제 처리
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+            } else {
+                alert("Thank you for your purchase!");
+                cart = [];
+                updateCart();
+                showProducts();
+            }
+        }
+    </script>
+</body>
+</html>

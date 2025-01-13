@@ -1,0 +1,70 @@
+/* 기본 키오스크 스타일 */
+.kiosk {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.kiosk_background {
+    width: 450px;
+    height: 95vh;
+    background-color: black;
+    border-radius: 15px;
+    margin-top: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.kiosck_screen {
+    width: 428px;
+    height: 76vh;
+    background-color: white;
+    border-radius: 15px;
+    margin: 11px;
+    position: relative;
+}
+
+#menu_table {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#menu_table button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#menu_table button:hover {
+    background-color: #0056b3;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .kiosk_background {
+        width: 90%;
+        height: 85vh;
+    }
+
+    .kiosck_screen {
+        width: 95%;
+        height: 70vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .kiosk_background {
+        width: 100%;
+        height: 80vh;
+    }
+
+    .kiosck_screen {
+        width: 100%;
+        height: 65vh;
+        margin: 5px;
+    }
+}
