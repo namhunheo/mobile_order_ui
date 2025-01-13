@@ -5,6 +5,6 @@ A reusable template for kiosk-style UI layouts, including basic screen and backg
 - Reusable CSS for kiosk-style applications
 
 ## Usage
-Include `kiosk-ui-layout.css` in your project:
+Include `mobile-ui-layout.css` in your project:
 ```html
 <link rel="stylesheet" href="kiosk-ui-layout.css">
